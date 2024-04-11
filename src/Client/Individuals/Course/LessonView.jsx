@@ -3,6 +3,7 @@ import { useLocation, useParams } from "react-router-dom";
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
+import { FaEyeSlash } from "react-icons/fa6";
 import {
   getCourseData,
   setUpdateLessonProgress,
@@ -12,6 +13,7 @@ import {
   getUserData,
 } from "../../../Store/Hooks/UserHook";
 import { Box, CircularProgress, Typography } from "@mui/material";
+import { MdPanoramaFishEye, MdRemoveRedEye } from "react-icons/md";
 
 function decrypt(text) {
   return atob(text);
@@ -105,6 +107,7 @@ const LessonView = () => {
     setNumPages(numPages);
   }
 
+  console.log(viewCourse, "lesson file");
   return (
     <div>
       {usersById ? (
@@ -204,15 +207,20 @@ const LessonView = () => {
                               <div className="scc__meta">
                                 <strong>3.27 </strong>
                                 <a
-                                  onClick={() =>
+                                  onClick={() => {
                                     setViewCourse({
-                                      file: lessons.LessonUrl[0],
-                                      name: lessons.LessonType[0],
-                                    })
-                                  }
+                                      file: lessons.LessonUrl,
+                                      name: lessons.LessonType,
+                                    });
+                                  }}
                                 >
-                                  <span className="question">
-                                    <i className="icofont-eye" /> Preview
+                                  <span className="question point">
+                                    {viewCourse ? (
+                                      <MdRemoveRedEye className="eye_icon" />
+                                    ) : (
+                                      <FaEyeSlash className="eye_icon" />
+                                    )}
+                                    Preview
                                   </span>
                                 </a>
                               </div>
@@ -224,56 +232,48 @@ const LessonView = () => {
                   ))}
                 </div>
               </div>
+
               <div
                 className="col-xl-8 col-lg-12 col-md-12 col-sm-12 col-12"
                 data-aos="fade-up"
               >
-                <div className="lesson__content__main">
-                  <div className="lesson__content__wrap">
-                    <h3>Video Content {viewCourse.name}</h3>
-                    <span>
-                      <a>Close</a>
-                    </span>
-                  </div>
-                  {usersById?.lesson?.length ? (
-                    <div className="plyr__video-embed rbtplayer">
-                      {viewCourse.file.endsWith(".mp4") ||
-                      viewCourse.file.endsWith(".avi") ||
-                      viewCourse.file.endsWith(".mov") ? (
-                        <video
-                          ref={videoRef}
-                          src={viewCourse.file}
-                          onLoadedMetadata={handleVideoDurationChange}
-                          autoPlay
-                          controls
-                          muted={false}
-                          width="100%"
-                          height="500"
-                          poster={usersById?.course?.coverPage[0]}
-                        ></video>
-                      ) : (
-                        <div>
-                          {viewCourse.file.endsWith(".pdf") && (
-                            <iframe
+                <div className="lesson__content__main ">
+                  {viewCourse && (
+                    <>
+                      <div className="plyr__video-embed rbtplayer">
+                        {viewCourse.name.endsWith(".mp4") ||
+                        viewCourse.name.endsWith(".avi") ||
+                        viewCourse.name.endsWith(".mov") ? (
+                          <div>
+                            <video
+                              ref={videoRef}
                               src={viewCourse.file}
+                              onLoadedMetadata={handleVideoDurationChange}
+                              autoPlay
+                              controls
+                              muted={false}
                               width="100%"
                               height="500"
-                              allow="autoplay"
-                              type="application/pdf"
-                            />
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <iframe
-                      src=''
-                      width="100%"
-                      height="500"
-                      allow="autoplay"
-                      type="application/pdf"
-                    ></iframe>
-                    
+                              poster={usersById?.course?.coverPage[0]}
+                            ></video>
+                          </div>
+                        ) : (
+                          <div>
+                            {viewCourse.name.endsWith(".pdf") && (
+                              <>
+                                <iframe
+                                  src={viewCourse.file}
+                                  width="100%"
+                                  height="500"
+                                  allow="autoplay"
+                                  type="application/pdf"
+                                />
+                              </>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </>
                   )}
                 </div>
               </div>
@@ -281,7 +281,6 @@ const LessonView = () => {
           </div>
         </div>
       ) : (
-
         <p>If You want this course enroll this course first</p>
       )}
     </div>

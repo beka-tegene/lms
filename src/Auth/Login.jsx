@@ -26,6 +26,9 @@ const Login = () => {
   const handleOpen3 = () => setOpen3(true);
   const handleClose3 = () => setOpen3(false);
 
+  console.log(email, "email");
+  console.log(password, "password");
+
   const validateLoginForm = () => {
     let errors = {};
 
@@ -43,7 +46,7 @@ const Login = () => {
     e.preventDefault();
     setLoadingLogin(true);
     if (validateLoginForm()) {
-      dispatch(setLogin({ data: { emailOrPhoneNumber:email, password } }));
+      dispatch(setLogin({ data: { emailOrPhoneNumber: email, password } }));
     } else {
       console.log("Form has errors, please correct them");
       setLoadingLogin(false);
